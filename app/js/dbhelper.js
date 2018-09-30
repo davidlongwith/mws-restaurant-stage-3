@@ -9,15 +9,7 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
-  }
-  
-  /**
-   * Reviews Database URL.
-   */
-  static get REVIEWS_URL() {
-    const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/reviews`;
+    return `http://localhost:${port}`;
   }
 
   /**
@@ -57,7 +49,7 @@ class DBHelper {
       }
       
       console.log('fetching from server');                              // log new fetch request
-      fetch(DBHelper.DATABASE_URL)                                      // fetch new data from the server
+      fetch(`${DBHelper.DATABASE_URL}/restaurants`)                     // fetch new data from the server
       .then(response => response.json())                                // return converted to json
       .then(fetchedData => {                                                    // use the new json data
         DBHelper.DBOpen().then(db => {                                          // start a database transaction
