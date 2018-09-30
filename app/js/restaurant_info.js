@@ -77,6 +77,18 @@ fetchRestaurantFromURL = (callback) => {
 }
 
 /**
+ * Get current restaurant reviews
+ */
+fetchReviews = () => {
+  const id = self.restaurant.id;
+  console.log('current restaurant id is: ', id);
+  DBHelper.fetchReviewsByRestaurant(id, (error, reviews) => {
+    console.log('restaurant reviews: ', reviews);
+    fillReviewsHTML(reviews);
+  });
+}
+
+/**
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
@@ -99,7 +111,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  fetchReviews();
 }
 
 /**

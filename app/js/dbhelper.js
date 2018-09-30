@@ -85,6 +85,19 @@ class DBHelper {
       }
     });
   }
+  
+  /**
+   * Fetch reviews by restaurant ID.
+   */
+  static fetchReviewsByRestaurant(id, callback) {
+    fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=` + id)
+    .then(response => response.json())
+    .then(reviews => {
+      console.log('fetched reviews: ' + reviews);
+      return callback(null, reviews);
+    });
+  }
+   
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
