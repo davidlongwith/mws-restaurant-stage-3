@@ -77,18 +77,6 @@ fetchRestaurantFromURL = (callback) => {
 }
 
 /**
- * Get current restaurant reviews
- */
-fetchReviews = () => {
-  const id = self.restaurant.id;
-  console.log('current restaurant id is: ', id);
-  DBHelper.fetchReviewsByRestaurant(id, (error, reviews) => {
-    console.log('restaurant reviews: ', reviews);
-    fillReviewsHTML(reviews);
-  });
-}
-
-/**
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
@@ -132,6 +120,48 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 
     hours.appendChild(row);
   }
+}
+
+postReview = () => {
+  event.preventDefault();    // Stop form from submitting normally
+  
+  // gather form data
+  const id = self.restaurant.id;
+  const name = document.getElementsByName("user_name")[0].value;
+  const rating = document.getElementsByName("user_rating")[0].value;
+  const comments = document.getElementsByName("user_comments")[0].value;
+  
+  // prepare fetch inputs
+  const url = DBHelper.DATABASE_URL + '/reviews/';
+  const formData = {
+    "restaurant_id": id,
+    "name": name,
+    "rating": rating,
+    "comments": comments
+    };
+    
+  fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(formData)
+    }
+  )
+  .then(res => res.json())
+  .then(response => console.log('The review has posted: ', response))
+  .catch(error => {
+    console.log('There was an error posting the review: ', error);
+  });
+}
+
+/**
+ * Get current restaurant reviews
+ */
+fetchReviews = () => {
+  const id = self.restaurant.id;
+  console.log('current restaurant id is: ', id);
+  DBHelper.fetchReviewsByRestaurant(id, (error, reviews) => {
+    console.log('restaurant reviews: ', reviews);
+    fillReviewsHTML(reviews);
+  });
 }
 
 /**
