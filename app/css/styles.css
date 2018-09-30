@@ -323,3 +323,80 @@ nav h1 a {
         font-size: 1.3em;
       }
     }
+    
+/* ================= Add Review Form ================= */
+
+/* containing div for the form */
+.review-form-container {
+  max-width: 64em;
+  padding: 0 5%;
+  margin: 1em auto;   /* center when max width is reached */
+}
+
+/* Form element */
+.review-form {
+  width: 100%;  /* total form width */
+  margin: 0 auto;  /* center form element in div */
+  background: none;  /* best with no background, otherwise fieldset border/legend looks funny */
+  text-align: left;  /* align form items to left */
+}
+
+/* all class names containing 'input-group' get extra space to declutter form */
+[class*='input-group'] {
+  margin-bottom: 1em;
+}
+
+/* input labels full width on separate line */
+label {
+  width: 100%;
+  display: inline-block;  /* treat as block elements (no inline wrapping when responsive) */
+}
+
+/* input areas full container width */
+input, textarea {
+  width: 100%;
+}
+
+/* set text box height, allow vertical resizing */
+textarea {
+  height: 6em;
+  resize: vertical;
+}
+
+/* ---------------responsive form------------------ */
+
+    /* allow 2 column form */
+    @media (min-width: 50em) {
+      /* get flexy */
+      .flex-form {
+        display: flex;
+        justify-content: ;
+        align-items: ;
+      }
+      /* flex children to full width of column */
+      .flex-form div {
+        width: 100%;  /* this works at 100 because inputs are a variable width */
+      }
+      /* applies to input group column 1 */
+      .input-group-1 {
+        padding-right: 10%;    /* center space between form columns */
+      }
+      /* applies to input group column 2 */
+      .input-group-2 {
+        padding-left: 10%;    /* center space between form columns */
+      }
+    }
+      
+      
+/* -------------form result classes--------------- */
+
+.error {
+  color: red;
+}
+
+.success {
+  color: green;
+}
+    
+    
+    

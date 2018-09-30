@@ -41,6 +41,36 @@
       </div>
     </section>
     <section id="reviews-container">
+      <div class="review-form-container"><!-- form container -->
+        <form method="post" class="review-form">
+          <fieldset>
+          <legend>Add Review</legend>
+            <div class="flex-form"><!-- parent flex container for fieldset groups -->
+              <div><!-- fieldset group 1, column 1 -->
+                <div class="input-group-1">
+                  <label for="user_name">Name:</label>
+                  <input type="text" class="name" name="user_name"  placeholder="your name here" required />
+                </div>
+              </div>
+              <div><!-- fieldset group 2, becomes column 2 -->
+                <div class="input-group-2">
+                  <label for="user_rating">Rating:</label>
+                  <input type="number" class="rating" name="user_rating"  placeholder="your rating 1-5"  min="1" max="5" required />
+                </div>
+              </div>
+            </div><!-- end .flex-form container -->
+            <div class="input-group">
+              <label for="user_comments">Comments:</label>
+              <textarea class="comments" name="user_comments" placeholder="your comments" ></textarea>
+            </div>
+            <div>
+              <button type="submit" class="">Submit Review</button>
+            </div>
+            <!-- result of form submission will be rendered inside this div -->
+            <div class="form-results"></div>
+          </fieldset>
+        </form>
+      </div><!-- end form container -->
       <ul id="reviews-list"></ul>
     </section>
   </main>
