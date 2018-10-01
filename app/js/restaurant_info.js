@@ -122,6 +122,9 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
   }
 }
 
+/**
+ * Post new review on form submission.
+ */
 postReview = () => {
   event.preventDefault();    // Stop form from submitting normally
   
