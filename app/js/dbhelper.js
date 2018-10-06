@@ -23,9 +23,22 @@ class DBHelper {
     }
   
     return idb.open('restaurants-DB', 1, upgradeDB => {                   // (name, version, upgradeCallback)
-      if (!upgradeDB.objectStoreNames.contains('restaurants')) {          // if this object store doesn't exist...
-        console.log('creating new object store: restaurants');            // log object store creation
-        upgradeDB.createObjectStore('restaurants', { keyPath: 'id' });    // create object store and set key
+      switch(upgradeDB.oldVersion) {                                        // oldVersion property indicates what version the browser already has
+        case 0:                                                             // check for this store, skip if already up-to-date
+          if (!upgradeDB.objectStoreNames.contains('restaurants')) {          // if this object store doesn't exist...
+            console.log('creating new object store: restaurants');            // log object store creation
+            upgradeDB.createObjectStore('restaurants', { keyPath: 'id' });    // create object store and set key
+          }
+        case 1:                                                             // no 'break' statement means all cases get checked
+          if (!upgradeDB.objectStoreNames.contains('reviews')) {
+            console.log('creating new object store: reviews');
+            upgradeDB.createObjectStore('reviews', { keyPath: 'id' });
+          }
+        case 2:
+          if (!upgradeDB.objectStoreNames.contains('reviews-pending')) {
+            console.log('creating new object store: reviews-pending');
+            upgradeDB.createObjectStore('reviews-pending', { keyPath: 'restaurant_id' });
+          }
       }
     });
   }
@@ -48,7 +61,7 @@ class DBHelper {
         return callback(null, data);                              // return promise/function callback
       }
       
-      console.log('fetching from server');                              // log new fetch request
+      console.log('fetching restaurants from server');                  // log new fetch request
       fetch(`${DBHelper.DATABASE_URL}/restaurants`)                     // fetch new data from the server
       .then(response => response.json())                                // return converted to json
       .then(fetchedData => {                                                    // use the new json data
