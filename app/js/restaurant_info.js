@@ -134,7 +134,7 @@ postReview = () => {
   const rating = document.getElementsByName("user_rating")[0].value;
   const comments = document.getElementsByName("user_comments")[0].value;
   
-  // prepare fetch inputs
+  // prepare review parameters
   const url = DBHelper.DATABASE_URL + '/reviews/';
   const formData = {
     "restaurant_id": id,
@@ -142,6 +142,9 @@ postReview = () => {
     "rating": rating,
     "comments": comments
     };
+  
+  // add to indexeddb
+  DBHelper.addReviewIDB(formData);
     
   fetch(url, {
     method: 'POST',
@@ -149,7 +152,7 @@ postReview = () => {
     }
   )
   .then(res => res.json())
-  .then(response => console.log('The review has posted: ', response))
+  .then(response => console.log('The review was submitted: ', response))
   .catch(error => {
     console.log('There was an error posting the review: ', error);
   });
@@ -160,7 +163,6 @@ postReview = () => {
  */
 fetchReviews = () => {
   const id = self.restaurant.id;
-  console.log('current restaurant id is: ', id);
   DBHelper.fetchReviewsByRestaurant(id, (error, reviews) => {
     console.log('display restaurant reviews: ', reviews);
     fillReviewsHTML(reviews);

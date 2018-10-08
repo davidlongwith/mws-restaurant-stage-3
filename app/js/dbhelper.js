@@ -32,7 +32,7 @@ class DBHelper {
         case 1:                                                             // no 'break' statement means all cases get checked
           if (!upgradeDB.objectStoreNames.contains('reviews')) {
             console.log('creating new object store: reviews');
-            upgradeDB.createObjectStore('reviews', { keyPath: 'id' });
+            upgradeDB.createObjectStore('reviews', {autoIncrement: true});   // auto generate key separate from data
           }
         case 2:
           let reviewStore = upgradeDB.transaction.objectStore('reviews');   // transaction on the 'reviews' object store
@@ -85,7 +85,7 @@ class DBHelper {
     });
   }
   
-  /* retrieve reviews (by restaurant_id) from database */
+  /* retrieve reviews (by 'restaurant_id' property) from idb */
   static DBGetReviews(id) {
     return DBHelper.DBOpen()
     .then(db => {
@@ -100,7 +100,7 @@ class DBHelper {
    * Fetch all reviews by restaurant ID (database then server).
    */
   static fetchReviewsByRestaurant(id, callback) {
-    // check idb for review data
+    // check idb for reviews
     DBHelper.DBGetReviews(id)
     .then(data => {
       console.log('reviews store contents: ', data);
@@ -123,6 +123,22 @@ class DBHelper {
         return callback(null, fetchedReviews);
       });
     })
+  }
+  
+  /**
+   * Add new review to indexeddb.
+   */
+  static addReviewIDB(formData) {
+    DBHelper.DBOpen()
+    .then(db => {
+      let tx = db.transaction('reviews', 'readwrite');
+      let addReview = tx.objectStore('reviews');
+      addReview.put(formData);
+      return tx.complete;
+    })
+    .catch(error => {
+      console.log('save to idb failed: ', error);
+    });
   }
    
   /**
