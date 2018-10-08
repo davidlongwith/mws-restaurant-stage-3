@@ -35,6 +35,9 @@ class DBHelper {
             upgradeDB.createObjectStore('reviews', { keyPath: 'id' });
           }
         case 2:
+          let reviewStore = upgradeDB.transaction.objectStore('reviews');   // transaction on the 'reviews' object store
+          reviewStore.createIndex('current-restaurant', 'restaurant_id');   // new index called 'current-restaurant' that sorts by 'restaurant_id' property
+        case 3:
           if (!upgradeDB.objectStoreNames.contains('reviews-pending')) {
             console.log('creating new object store: reviews-pending');
             upgradeDB.createObjectStore('reviews-pending', { keyPath: 'restaurant_id' });
@@ -99,13 +102,14 @@ class DBHelper {
     });
   }
   
-  /* get reviews from database */
-  static DBGetReviews() {
+  /* get reviews (by restaurant_id) from database */
+  static DBGetReviews(id) {
     return DBHelper.DBOpen()
     .then(db => {
       let tx = db.transaction('reviews', 'readonly');
       let restaurantReviews = tx.objectStore('reviews');
-      return restaurantReviews.getAll();
+      let reviewIndex = restaurantReviews.index('current-restaurant');    // reference index created in idb.open
+      return reviewIndex.getAll(id);
     });
   }
   
@@ -113,7 +117,7 @@ class DBHelper {
    * Fetch all reviews by restaurant ID.
    */
   static fetchReviewsByRestaurant(id, callback) {
-    DBHelper.DBGetReviews()
+    DBHelper.DBGetReviews(id)
     .then(data => {
       console.log('reviews store contents: ', data);
       if (data.length > 0) {
