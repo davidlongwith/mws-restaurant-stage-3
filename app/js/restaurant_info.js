@@ -156,13 +156,13 @@ postReview = () => {
 }
 
 /**
- * Get current restaurant reviews
+ * Get reviews for current restaurant
  */
 fetchReviews = () => {
   const id = self.restaurant.id;
   console.log('current restaurant id is: ', id);
   DBHelper.fetchReviewsByRestaurant(id, (error, reviews) => {
-    console.log('restaurant reviews: ', reviews);
+    console.log('display restaurant reviews: ', reviews);
     fillReviewsHTML(reviews);
   });
 }

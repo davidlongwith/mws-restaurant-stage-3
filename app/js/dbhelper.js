@@ -99,16 +99,41 @@ class DBHelper {
     });
   }
   
+  /* get reviews from database */
+  static DBGetReviews() {
+    return DBHelper.DBOpen()
+    .then(db => {
+      let tx = db.transaction('reviews', 'readonly');
+      let restaurantReviews = tx.objectStore('reviews');
+      return restaurantReviews.getAll();
+    });
+  }
+  
   /**
-   * Fetch reviews by restaurant ID.
+   * Fetch all reviews by restaurant ID.
    */
   static fetchReviewsByRestaurant(id, callback) {
-    fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=` + id)
-    .then(response => response.json())
-    .then(reviews => {
-      console.log('fetched reviews: ' + reviews);
-      return callback(null, reviews);
-    });
+    DBHelper.DBGetReviews()
+    .then(data => {
+      console.log('reviews store contents: ', data);
+      if (data.length > 0) {
+        return callback(null, data);
+      }
+    
+      console.log('fetching reviews from server');
+      fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=` + id)
+      .then(response => response.json())
+      .then(fetchedReviews => {
+        DBHelper.DBOpen().then(db => {
+          let tx = db.transaction('reviews', 'readwrite');
+          let restaurantReviews = tx.objectStore('reviews');
+          fetchedReviews.forEach(review => restaurantReviews.put(review));
+          return tx.complete;
+        })
+        console.log('adding reviews to database: ', fetchedReviews);
+        return callback(null, fetchedReviews);
+      });
+    })
   }
    
 
