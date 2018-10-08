@@ -56,7 +56,9 @@ class DBHelper {
     });
   }  
 
-  /* fetch all restaurants (database then server) */
+  /**
+   * Fetch all restaurants (database then server).
+   */
   static fetchRestaurants(callback) {
     DBHelper.DBGetRestaurants().then(data => {                    // get data from database
       console.log('database contents: ', data);                   // log existing database content
@@ -74,7 +76,7 @@ class DBHelper {
           fetchedData.forEach(restaurant => allRestaurants.put(restaurant));    // go through json data and put each restaurant in the database
           return tx.complete;                                                   // all steps completed, finalize transaction
         })
-        console.log('adding to database: ', fetchedData);                       // log new data from fetch request
+        console.log('adding to idb: ', fetchedData);                       // log new data from fetch request
         return callback(null, fetchedData);                                     // return promise/function callback
       })
     })
@@ -82,7 +84,47 @@ class DBHelper {
       console.log('fetchRestaurants failed: ', error.message);        // log error info
     });
   }
-
+  
+  /* retrieve reviews (by restaurant_id) from database */
+  static DBGetReviews(id) {
+    return DBHelper.DBOpen()
+    .then(db => {
+      let tx = db.transaction('reviews', 'readonly');
+      let restaurantReviews = tx.objectStore('reviews');
+      let reviewIndex = restaurantReviews.index('current-restaurant');    // reference index created in idb.open
+      return reviewIndex.getAll(id);
+    });
+  }
+  
+  /**
+   * Fetch all reviews by restaurant ID (database then server).
+   */
+  static fetchReviewsByRestaurant(id, callback) {
+    // check idb for review data
+    DBHelper.DBGetReviews(id)
+    .then(data => {
+      console.log('reviews store contents: ', data);
+      if (data.length > 0) {
+        return callback(null, data);
+      }
+      
+      // fetch reviews from server and save to idb
+      console.log('fetching reviews from server');
+      fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=` + id)
+      .then(response => response.json())
+      .then(fetchedReviews => {
+        DBHelper.DBOpen().then(db => {
+          let tx = db.transaction('reviews', 'readwrite');
+          let restaurantReviews = tx.objectStore('reviews');
+          fetchedReviews.forEach(review => restaurantReviews.put(review));
+          return tx.complete;
+        })
+        console.log('adding reviews to idb: ', fetchedReviews);
+        return callback(null, fetchedReviews);
+      });
+    })
+  }
+   
   /**
    * Fetch a restaurant by its ID.
    */
@@ -101,45 +143,6 @@ class DBHelper {
       }
     });
   }
-  
-  /* get reviews (by restaurant_id) from database */
-  static DBGetReviews(id) {
-    return DBHelper.DBOpen()
-    .then(db => {
-      let tx = db.transaction('reviews', 'readonly');
-      let restaurantReviews = tx.objectStore('reviews');
-      let reviewIndex = restaurantReviews.index('current-restaurant');    // reference index created in idb.open
-      return reviewIndex.getAll(id);
-    });
-  }
-  
-  /**
-   * Fetch all reviews by restaurant ID.
-   */
-  static fetchReviewsByRestaurant(id, callback) {
-    DBHelper.DBGetReviews(id)
-    .then(data => {
-      console.log('reviews store contents: ', data);
-      if (data.length > 0) {
-        return callback(null, data);
-      }
-    
-      console.log('fetching reviews from server');
-      fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=` + id)
-      .then(response => response.json())
-      .then(fetchedReviews => {
-        DBHelper.DBOpen().then(db => {
-          let tx = db.transaction('reviews', 'readwrite');
-          let restaurantReviews = tx.objectStore('reviews');
-          fetchedReviews.forEach(review => restaurantReviews.put(review));
-          return tx.complete;
-        })
-        console.log('adding reviews to database: ', fetchedReviews);
-        return callback(null, fetchedReviews);
-      });
-    })
-  }
-   
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
