@@ -153,7 +153,7 @@ class DBHelper {
     .then(res => res.json())
     .then(response => console.log('The review was submitted: ', response))
     .catch(error => {
-      console.log('There was an error posting the review: ', error);
+      console.log('save to pending reviews');
     });
   }
    
