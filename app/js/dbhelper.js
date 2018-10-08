@@ -85,6 +85,16 @@ class DBHelper {
     });
   }
   
+  /* retrieve pending reviews */
+  static DBGetPending() {
+    return DBHelper.DBOpen()
+    .then(db => {
+      let tx = db.transaction('reviews-pending', 'readwrite');
+      let pendingReviews = tx.objectStore('reviews-pending');
+      return pendingReviews.getAll();
+    });
+  }
+  
   /* retrieve reviews (by 'restaurant_id' property) from idb */
   static DBGetReviews(id) {
     return DBHelper.DBOpen()
@@ -100,6 +110,11 @@ class DBHelper {
    * Fetch all reviews by restaurant ID (database then server).
    */
   static fetchReviewsByRestaurant(id, callback) {
+    DBHelper.DBGetPending()
+    .then(pending => {
+      console.log('pending reviews???', (pending));
+    })
+    
     // check idb for reviews
     DBHelper.DBGetReviews(id)
     .then(data => {
