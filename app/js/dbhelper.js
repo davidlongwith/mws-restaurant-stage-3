@@ -140,6 +140,22 @@ class DBHelper {
       console.log('save to idb failed: ', error);
     });
   }
+  
+  /**
+   * Add new review to server.
+   */
+  static addReviewServer(url, formData) {
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(formData)
+      }
+    )
+    .then(res => res.json())
+    .then(response => console.log('The review was submitted: ', response))
+    .catch(error => {
+      console.log('There was an error posting the review: ', error);
+    });
+  }
    
   /**
    * Fetch a restaurant by its ID.

@@ -125,7 +125,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Post new review on form submission.
  */
-postReview = () => {
+addReview = () => {
   event.preventDefault();    // Stop form from submitting normally
   
   // gather form data
@@ -145,18 +145,12 @@ postReview = () => {
   
   // add to indexeddb
   DBHelper.addReviewIDB(formData);
-    
-  fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(formData)
-    }
-  )
-  .then(res => res.json())
-  .then(response => console.log('The review was submitted: ', response))
-  .catch(error => {
-    console.log('There was an error posting the review: ', error);
-  });
+  
+  // add to server
+  DBHelper.addReviewServer(url, formData);
 }
+
+/*  */
 
 /**
  * Get reviews for current restaurant
