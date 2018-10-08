@@ -32,7 +32,7 @@ class DBHelper {
         case 1:                                                             // no 'break' statement means all cases get checked
           if (!upgradeDB.objectStoreNames.contains('reviews')) {
             console.log('creating new object store: reviews');
-            upgradeDB.createObjectStore('reviews', {autoIncrement: true});   // auto generate key separate from data
+            upgradeDB.createObjectStore('reviews', { autoIncrement: true });   // auto generate key separate from data
           }
         case 2:
           let reviewStore = upgradeDB.transaction.objectStore('reviews');   // transaction on the 'reviews' object store
@@ -40,7 +40,7 @@ class DBHelper {
         case 3:
           if (!upgradeDB.objectStoreNames.contains('reviews-pending')) {
             console.log('creating new object store: reviews-pending');
-            upgradeDB.createObjectStore('reviews-pending', { keyPath: 'restaurant_id' });
+            upgradeDB.createObjectStore('reviews-pending', { autoIncrement: true });
           }
       }
     });
@@ -154,6 +154,23 @@ class DBHelper {
     .then(response => console.log('The review was submitted: ', response))
     .catch(error => {
       console.log('save to pending reviews');
+      DBHelper.addReviewPending(formData);
+    });
+  }
+  
+  /**
+   * Add new review to offline pending idb store.
+   */
+  static addReviewPending(formData) {
+    DBHelper.DBOpen()
+    .then(db => {
+      let tx = db.transaction('reviews-pending', 'readwrite');
+      let pendingReview = tx.objectStore('reviews-pending');
+      pendingReview.put(formData);
+      return tx.complete;
+    })
+    .catch(error => {
+      console.log('save to pending-idb failed: ', error);
     });
   }
    
