@@ -113,6 +113,15 @@ class DBHelper {
     DBHelper.DBGetPending()
     .then(pending => {
       console.log('pending reviews???', (pending));
+      const url = DBHelper.DATABASE_URL + '/reviews/';
+      fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(pending)
+        }
+      )
+      .catch(error => {
+        console.log('reviews pending...', error);
+      });
     })
     
     // check idb for reviews
