@@ -110,6 +110,7 @@ class DBHelper {
    * Fetch all reviews by restaurant ID (database then server).
    */
   static fetchReviewsByRestaurant(id, callback) {
+    // send pending reviews to server
     DBHelper.DBGetPending()
     .then(pending => {
       console.log('pending reviews???', (pending));
