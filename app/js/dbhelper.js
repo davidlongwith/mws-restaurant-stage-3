@@ -87,6 +87,13 @@ class DBHelper {
     });
   }
   
+  /**
+   * Favorites
+   */
+  static setFavorite() {
+    const url = DBHelper.DATABASE_URL + '/restaurants/' + restaurantID + '/?is_favorite=' + setFav;
+  }
+  
   /* retrieve pending reviews */
   static DBGetPending() {
     return DBHelper.DBOpen()

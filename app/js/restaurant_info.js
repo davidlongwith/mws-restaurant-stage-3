@@ -84,12 +84,18 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   name.innerHTML = restaurant.name;
 
   const favoriteBttn = document.getElementById('favorite-button');
-  favoriteBttn.innerHTML = '♡';       // White Heart Suit - Unicode number U+2661
-  // favoriteBttn.innerHTML = '🧡';    // Orange Heart - Unicode number U+1F9E1
-  const favoriteBttnLabel = restaurant.name + ' is favorite';    // or ' not a favorite'
+  let favoriteBttnLabel;
   favoriteBttn.setAttribute('aria-label', favoriteBttnLabel);
-  favoriteBttn.onclick = function toggleFavorite() {
+  if (restaurant.is_favorite === "true") {
+    favoriteBttn.innerHTML = '🧡';   // Orange Heart - Unicode number U+1F9E1
+    favoriteBttnLabel = restaurant.name + ' is favorite';
+  } else {
+    favoriteBttn.innerHTML = '♡';   // White Heart Suit - Unicode number U+2661
+    favoriteBttnLabel = restaurant.name + ' not a favorite';
+  }
+  favoriteBttn.onclick = toggleFavorite = () => {
     console.log('toggle fav');
+    
   };
 
   const address = document.getElementById('restaurant-address');
