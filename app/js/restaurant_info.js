@@ -83,6 +83,15 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
+  const favoriteBttn = document.getElementById('favorite-button');
+  favoriteBttn.innerHTML = '♡';       // White Heart Suit - Unicode number U+2661
+  // favoriteBttn.innerHTML = '🧡';    // Orange Heart - Unicode number U+1F9E1
+  const favoriteBttnLabel = restaurant.name + ' is favorite';    // or ' not a favorite'
+  favoriteBttn.setAttribute('aria-label', favoriteBttnLabel);
+  favoriteBttn.onclick = function toggleFavorite() {
+    console.log('toggle fav');
+  };
+
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
