@@ -63,7 +63,8 @@ class DBHelper {
     DBHelper.DBGetRestaurants().then(data => {                    // get data from database
       console.log('database contents: ', data);                   // log existing database content
       if (data.length > 0) {                                      // if some data is present
-        return callback(null, data);                              // return promise/function callback
+        callback(null, data);                                     // return promise/function callback
+        return;                                                   // stop and return
       }
       
       console.log('fetching restaurants from server');                  // log new fetch request
@@ -76,8 +77,9 @@ class DBHelper {
           fetchedData.forEach(restaurant => allRestaurants.put(restaurant));    // go through json data and put each restaurant in the database
           return tx.complete;                                                   // all steps completed, finalize transaction
         })
-        console.log('adding to idb: ', fetchedData);                       // log new data from fetch request
-        return callback(null, fetchedData);                                     // return promise/function callback
+        console.log('adding to idb: ', fetchedData);                      // log new data from fetch request
+        callback(null, fetchedData);                                      // return promise/function callback
+        return;                                                           // stop and return
       })
     })
     .catch(error => {                                                 // error in promise chain
