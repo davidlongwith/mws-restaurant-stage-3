@@ -90,8 +90,15 @@ class DBHelper {
   /**
    * Favorites
    */
-  static setFavorite() {
-    const url = DBHelper.DATABASE_URL + '/restaurants/' + restaurantID + '/?is_favorite=' + setFav;
+  static setFavorite(restaurantID) {
+    let favorite = 'true';
+    const url = DBHelper.DATABASE_URL + '/restaurants/' + restaurantID + '/?is_favorite=' + favorite;
+    fetch(url, {
+      method: 'PUT'
+    })
+    .then(res => res.json())
+    .then(response => console.log('favorite set:', JSON.stringify(response)))
+    .catch(error => console.error('error setting favorite:', error));
   }
   
   /* retrieve pending reviews */

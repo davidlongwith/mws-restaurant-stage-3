@@ -94,7 +94,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     favoriteBttnLabel = restaurant.name + ' not a favorite';
   }
   favoriteBttn.onclick = toggleFavorite = () => {
-    console.log('toggle fav');
+    const restaurantID = self.restaurant.id;
+    DBHelper.setFavorite(restaurantID);
     
   };
 
