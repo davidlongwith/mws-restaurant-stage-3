@@ -83,20 +83,34 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
+  // favorite button
   const favoriteBttn = document.getElementById('favorite-button');
   let favoriteBttnLabel;
-  favoriteBttn.setAttribute('aria-label', favoriteBttnLabel);
-  if (restaurant.is_favorite === "true") {
+  if (restaurant.is_favorite == "true") {
     favoriteBttn.innerHTML = '🧡';   // Orange Heart - Unicode number U+1F9E1
     favoriteBttnLabel = restaurant.name + ' is favorite';
   } else {
     favoriteBttn.innerHTML = '♡';   // White Heart Suit - Unicode number U+2661
     favoriteBttnLabel = restaurant.name + ' not a favorite';
   }
-  favoriteBttn.onclick = toggleFavorite = () => {
+  favoriteBttn.setAttribute('aria-label', favoriteBttnLabel);
+  favoriteBttn.onclick = function(restaurant) {
     const restaurantID = self.restaurant.id;
-    DBHelper.setFavorite(restaurantID);
-    
+    let favoriteStatus = self.restaurant.is_favorite;
+    console.log('onclick restaurant id: ', restaurantID);
+    console.log('is_favorite property = ', favoriteStatus);
+    let setFav;
+    if (favoriteStatus == "false") {
+      setFav = "true";
+    } else {
+      setFav = "false";
+    }
+    console.log('setFav = ', setFav);
+
+    const url = DBHelper.DATABASE_URL + '/restaurants/' + restaurantID + '/?is_favorite=' + setFav;
+    fetch(url, {
+      method: 'PUT'
+    })
   };
 
   const address = document.getElementById('restaurant-address');
