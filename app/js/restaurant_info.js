@@ -106,7 +106,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     let favoriteStatus = self.restaurant.is_favorite;
     console.log('onclick restaurant id: ', restaurantID);
     console.log('is_favorite status = ', favoriteStatus);
-    console.log('service worker v1');
+    console.log('service worker - updating IDB 2');
     
     let setFavStatus;
     if (favoriteStatus === "false") {
@@ -122,7 +122,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
       method: 'PUT'
     })
     .then(res => {
-      console.log('updating favorite status');
+      DBHelper.updateFavoriteIDB(restaurantID, setFavStatus);
+      console.log('updated favorite status');
       displayFavorite();
     })
   };

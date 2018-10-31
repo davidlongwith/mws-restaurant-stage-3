@@ -87,6 +87,8 @@ class DBHelper {
     });
   }
   
+
+  
   /* retrieve pending reviews */
   static DBGetPending() {
     return DBHelper.DBOpen()
@@ -164,7 +166,23 @@ class DBHelper {
       return tx.complete;
     })
     .catch(error => {
-      console.log('save to idb failed: ', error);
+      console.log('save to idb reviews failed: ', error);
+    });
+  }
+  
+  static updateFavoriteIDB(restaurantID, setFavStatus) {
+    DBHelper.DBOpen()
+    .then(db => {
+      const tx = db.transaction('restaurants', 'readwrite');
+      const allRestaurants = tx.objectStore('restaurants');
+      const id = restaurantID;
+      const currentRestaurant = allRestaurants.get(id);
+      currentRestaurant.is_favorite = setFavStatus;
+      allRestaurants.put(currentRestaurant);
+      console.log('updated idb favorites = ', currentRestaurant);
+    })
+    .catch(error => {
+      console.log('save to idb favorites failed: ', error);
     });
   }
   
