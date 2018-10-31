@@ -106,10 +106,10 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     let favoriteStatus = self.restaurant.is_favorite;
     console.log('onclick restaurant id: ', restaurantID);
     console.log('is_favorite status = ', favoriteStatus);
-    console.log('service worker - updating IDB 2');
+    console.log('service worker - updating IDB 4');
     
     let setFavStatus;
-    if (favoriteStatus === "false") {
+    if (favoriteStatus === false || favoriteStatus === "false") {
       setFavStatus = "true";
     } else {
       setFavStatus = "false";
@@ -121,11 +121,11 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fetch(url, {
       method: 'PUT'
     })
-    .then(res => {
+    .then(() => {
       DBHelper.updateFavoriteIDB(restaurantID, setFavStatus);
-      console.log('updated favorite status');
+      console.log('updating favorite status');
       displayFavorite();
-    })
+    });
   };
 
   const address = document.getElementById('restaurant-address');
