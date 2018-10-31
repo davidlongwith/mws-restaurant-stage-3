@@ -1,5 +1,9 @@
 let restaurant;
 var newMap;
+// favorite button
+const favoriteBttn = document.getElementById('favorite-button');
+// favorite button label
+let favoriteBttnLabel;
 
 /**
  * Initialize map as soon as the page is loaded.
@@ -76,16 +80,8 @@ fetchRestaurantFromURL = (callback) => {
   }
 }
 
-/**
- * Create restaurant HTML and add it to the webpage
- */
-fillRestaurantHTML = (restaurant = self.restaurant) => {
-  const name = document.getElementById('restaurant-name');
-  name.innerHTML = restaurant.name;
-
-  // favorite button
-  const favoriteBttn = document.getElementById('favorite-button');
-  let favoriteBttnLabel;
+/* update favorite button UI */
+displayFavorite = (restaurant = self.restaurant) => {
   if (restaurant.is_favorite == "true") {
     favoriteBttn.innerHTML = '🧡';   // Orange Heart - Unicode number U+1F9E1
     favoriteBttnLabel = restaurant.name + ' is favorite';
@@ -94,22 +90,40 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     favoriteBttnLabel = restaurant.name + ' not a favorite';
   }
   favoriteBttn.setAttribute('aria-label', favoriteBttnLabel);
+}
+
+/**
+ * Create restaurant HTML and add it to the webpage
+ */
+fillRestaurantHTML = (restaurant = self.restaurant) => {
+  const name = document.getElementById('restaurant-name');
+  name.innerHTML = restaurant.name;
+
+  // favorite button
+  displayFavorite();    // update UI
   favoriteBttn.onclick = function(restaurant) {
     const restaurantID = self.restaurant.id;
     let favoriteStatus = self.restaurant.is_favorite;
     console.log('onclick restaurant id: ', restaurantID);
-    console.log('is_favorite property = ', favoriteStatus);
-    let setFav;
-    if (favoriteStatus == "false") {
-      setFav = "true";
+    console.log('is_favorite status = ', favoriteStatus);
+    console.log('service worker v1');
+    
+    let setFavStatus;
+    if (favoriteStatus === "false") {
+      setFavStatus = "true";
     } else {
-      setFav = "false";
+      setFavStatus = "false";
     }
-    console.log('setFav = ', setFav);
+    console.log('setFavStatus = ', setFavStatus);
+    
 
-    const url = DBHelper.DATABASE_URL + '/restaurants/' + restaurantID + '/?is_favorite=' + setFav;
+    let url = DBHelper.DATABASE_URL + '/restaurants/' + restaurantID + '/?is_favorite=' + setFavStatus;
     fetch(url, {
       method: 'PUT'
+    })
+    .then(res => {
+      console.log('updating favorite status');
+      displayFavorite();
     })
   };
 
