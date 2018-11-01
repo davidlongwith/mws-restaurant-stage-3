@@ -80,16 +80,26 @@ fetchRestaurantFromURL = (callback) => {
   }
 }
 
-/* update favorite button UI */
+/* favorite button UI */
 displayFavorite = (restaurant = self.restaurant) => {
   if (restaurant.is_favorite == "true") {
-    favoriteBttn.innerHTML = '🧡';   // Orange Heart - Unicode number U+1F9E1
-    favoriteBttnLabel = restaurant.name + ' is favorite';
+    isFavorite();
   } else {
-    favoriteBttn.innerHTML = '♡';   // White Heart Suit - Unicode number U+2661
-    favoriteBttnLabel = restaurant.name + ' not a favorite';
+    notFavorite();
   }
   favoriteBttn.setAttribute('aria-label', favoriteBttnLabel);
+}
+
+/* is a favorite */
+function isFavorite(restaurant = self.restaurant) {
+  favoriteBttn.innerHTML = '🧡';   // Orange Heart - Unicode number U+1F9E1
+  favoriteBttnLabel = restaurant.name + ' is favorite';
+}
+
+/* not a favorite */
+function notFavorite(restaurant = self.restaurant) {
+  favoriteBttn.innerHTML = '♡';   // White Heart Suit - Unicode number U+2661
+  favoriteBttnLabel = restaurant.name + ' not a favorite';
 }
 
 /**
@@ -100,14 +110,14 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   name.innerHTML = restaurant.name;
 
   // favorite button
-  displayFavorite();    // update UI
+  displayFavorite();    // set favorites button UI
   favoriteBttn.onclick = function(restaurant) {
     const restaurantID = self.restaurant.id;
     let favoriteStatus = self.restaurant.is_favorite;
     console.log('onclick restaurant id: ', restaurantID);
     console.log('is_favorite status = ', favoriteStatus);
-    console.log('service worker - updating IDB 4');
     
+    // new favorite status
     let setFavStatus;
     if (favoriteStatus === false || favoriteStatus === "false") {
       setFavStatus = "true";
@@ -133,6 +143,14 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
         allRestaurants.put(json);
       });
       return json;
+    })
+    .then(() => {
+      // update button to match new status
+      if (setFavStatus == "true") {
+        isFavorite();
+      } else {
+        notFavorite();
+      }
     })
     .catch(error => {
       console.log('unable to save favorite at this time: ', error);
