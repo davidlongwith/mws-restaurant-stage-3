@@ -170,36 +170,6 @@ class DBHelper {
     });
   }
   
-  static updateFavoriteIDB(restaurantID, setFavStatus) {
-    // access the restaurants object store for a transaction
-    DBHelper.DBOpen()
-    .then(db => {
-      const tx = db.transaction('restaurants', 'readwrite');
-      const allRestaurants = tx.objectStore('restaurants');
-
-      // get the current restaurant, update it, and put it back
-      const id = restaurantID;
-      const requestRestaurant = allRestaurants.get(id);
-      requestRestaurant.onerror = function(event) {
-        console.log('unable to requestRestaurant for idb update');
-      };
-      requestRestaurant.onsuccess = function(event) {
-        console.log('get fav restaurant by id success');
-        let data = event.target.result;
-        data.is_favorite = setFavStatus;
-        
-        // Put updated restaurant back into the database.
-        let requestUpdate = allRestaurants.put(data);
-        requestUpdate.onerror = function(event) {
-          console.log('failed to put updated data back into database');
-        };
-        requestUpdate.onsuccess = function(event) {
-          console.log('holy crap it works!');
-        };
-      };
-    });
-  }
-  
   /**
    * Add new review to server.
    */

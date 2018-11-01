@@ -116,15 +116,26 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     }
     console.log('setFavStatus = ', setFavStatus);
     
-
+    // update favorite on server
     let url = DBHelper.DATABASE_URL + '/restaurants/' + restaurantID + '/?is_favorite=' + setFavStatus;
     fetch(url, {
       method: 'PUT'
     })
-    .then(() => {
-      DBHelper.updateFavoriteIDB(restaurantID, setFavStatus);
-      console.log('updating favorite status');
-      displayFavorite();
+    .then(response => response.json())
+    .then(json => {
+      console.log('The json response is: ', json);
+      
+      // update favorite in idb
+      DBHelper.DBOpen()
+      .then(db => {
+        const tx = db.transaction('restaurants', 'readwrite');
+        const allRestaurants = tx.objectStore('restaurants');
+        allRestaurants.put(json);
+      });
+      return json;
+    })
+    .catch(error => {
+      console.log('unable to save favorite at this time: ', error);
     });
   };
 
