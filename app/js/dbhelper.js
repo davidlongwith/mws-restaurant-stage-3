@@ -186,9 +186,9 @@ class DBHelper {
       }
     )
     .then(res => res.json())
-    .then(response => console.log('The review was submitted: ', response))
+    .then(response => alert('The review was submitted successfully: ', response))
     .catch(error => {
-      console.log('save to pending reviews');
+      alert('The review has been saved and will be submitted when online.');
       DBHelper.addReviewPending(formData);
     });
   }
