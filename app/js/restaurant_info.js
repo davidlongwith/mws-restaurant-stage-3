@@ -1,9 +1,7 @@
 let restaurant;
 var newMap;
-// favorite button
-const favoriteBttn = document.getElementById('favorite-button');
-// favorite button label
-let favoriteBttnLabel;
+const favoriteBttn = document.getElementById('favorite-button');    // favorite button
+let favoriteBttnLabel;    // favorite button label
 
 /**
  * Initialize map as soon as the page is loaded.
@@ -80,7 +78,9 @@ fetchRestaurantFromURL = (callback) => {
   }
 }
 
-/* favorite button UI */
+/**
+ * Favorite button UI
+ */
 displayFavorite = (restaurant = self.restaurant) => {
   if (restaurant.is_favorite == "true") {
     isFavorite();
@@ -90,13 +90,17 @@ displayFavorite = (restaurant = self.restaurant) => {
   favoriteBttn.setAttribute('aria-label', favoriteBttnLabel);
 }
 
-/* is a favorite */
+/**
+ * Set UI as favorite
+ */
 function isFavorite(restaurant = self.restaurant) {
   favoriteBttn.innerHTML = '🧡';   // Orange Heart - Unicode number U+1F9E1
   favoriteBttnLabel = restaurant.name + ' is favorite';
 }
 
-/* not a favorite */
+/**
+ * Set UI as not a favorite
+ */
 function notFavorite(restaurant = self.restaurant) {
   favoriteBttn.innerHTML = '♡';   // White Heart Suit - Unicode number U+2661
   favoriteBttnLabel = restaurant.name + ' not a favorite';

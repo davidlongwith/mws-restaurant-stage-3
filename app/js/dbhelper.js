@@ -46,7 +46,9 @@ class DBHelper {
     });
   }
 
-  /* retrieve restaurant data from database */
+  /**
+   * Retrieve restaurant data from database
+   */
   static DBGetRestaurants() {
     return DBHelper.DBOpen()                                // return promise to calling function; open DB to access it
     .then(db => {                                           // .open returned a promise for accessing database
@@ -89,7 +91,9 @@ class DBHelper {
   
 
   
-  /* retrieve pending reviews */
+  /**
+   * Retrieve pending reviews
+   */
   static DBGetPending() {
     return DBHelper.DBOpen()
     .then(db => {
@@ -99,7 +103,9 @@ class DBHelper {
     });
   }
   
-  /* retrieve reviews (by 'restaurant_id' property) from idb */
+  /**
+   * Retrieve reviews (by 'restaurant_id' property) from idb
+   */
   static DBGetReviews(id) {
     return DBHelper.DBOpen()
     .then(db => {
