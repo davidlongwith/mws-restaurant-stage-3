@@ -114,7 +114,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   name.innerHTML = restaurant.name;
 
   // favorite button
-  displayFavorite();    // set favorites button UI
+  displayFavorite();    // display appropriate favorite button UI on page load
   favoriteBttn.onclick = function(restaurant) {
     const restaurantID = self.restaurant.id;
     let favoriteStatus = self.restaurant.is_favorite;
@@ -123,7 +123,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     
     // new favorite status
     let setFavStatus;
-    if (favoriteStatus === false || favoriteStatus === "false") {
+    if (favoriteStatus === false || favoriteStatus === "false" || favoriteStatus == undefined) {
       setFavStatus = "true";
     } else {
       setFavStatus = "false";
